@@ -1,3 +1,5 @@
+'use client'
+
 import * as React from 'react';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -31,6 +33,8 @@ const defaultTheme = createTheme();
 
 export default function Reseteo() {
 
+  const [key, setKey] = React.useState(undefined)
+
   const router = useRouter()
 
   const handleSubmit = async (event) => {
@@ -48,7 +52,7 @@ export default function Reseteo() {
           }
         });
       if (res.status === 200) {
-        localStorage.setItem('user', res.data.id)
+        setKey(localStorage.setItem('user', res.data.id))
         router.push('/reset/contrasena')
       } else {
         alert('Sucedió un error, inténtelo de nuevo')

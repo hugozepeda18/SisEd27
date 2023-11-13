@@ -1,3 +1,5 @@
+'use client'
+
 import Box from '@mui/material/Box';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
@@ -13,7 +15,7 @@ import CheckBoxIcon from '@mui/icons-material/CheckBox';
 import ReportIcon from '@mui/icons-material/Report';
 import LogoutIcon from '@mui/icons-material/Logout';
 import Link from "next/link";
-import { useState } from 'react';
+import * as React from 'react';
 import axios from 'axios';
 
 const Search = styled('div')(({ theme }) => ({
@@ -66,7 +68,13 @@ const ColorButton = styled(Button)(({ theme }) => ({
 
 export default function Navbar() {
 
-    const [alumno, setAlumno] = useState('')
+    const [key, setKey] = React.useState(undefined)
+
+    React.useEffect(() => {
+        setKey(localStorage.getItem('jwt'))
+    }, [])
+
+    const [alumno, setAlumno] = React.useState('')
     const handleSetAlumno = (e) => setAlumno(e.target.value)
 
     const router = useRouter()
@@ -88,7 +96,7 @@ export default function Navbar() {
 
     const logout = (event) => {
         event.preventDefault()
-        localStorage.clear()
+        setKey(localStorage.clear())
         window.location.replace('/')
     }
 

@@ -1,3 +1,5 @@
+'use client'
+
 import * as React from 'react';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -30,6 +32,8 @@ const defaultTheme = createTheme();
 
 export default function SignIn() {
 
+  const [key, setKey] = React.useState(undefined)
+
   const router = useRouter()
 
   const handleSubmit = async (event) => {
@@ -58,7 +62,7 @@ export default function SignIn() {
         })
       if (res) {
         if (res.status === 201) {
-          localStorage.setItem('jwt', res.data.token);
+          setKey(localStorage.setItem('jwt', res.data.token))
           router.push('/landing');
         }
       }

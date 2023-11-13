@@ -1,3 +1,5 @@
+'use client'
+
 import * as React from 'react';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Box from '@mui/material/Box';
@@ -8,10 +10,16 @@ const defaultTheme = createTheme();
 
 export default function Landing() {
 
+    const [key, setKey] = React.useState(undefined)
+
+    React.useEffect(() => {
+        setKey(localStorage.getItem('jwt'))
+    }, [])
+
     return (
         <>        
             {
-                localStorage.getItem('jwt') ? (
+                key ? (
                     <ThemeProvider theme={defaultTheme}>
                             <Navbar />
                             <Box sx={{ flexGrow: 1, marginTop: 5 }}> 
@@ -19,7 +27,7 @@ export default function Landing() {
                             </Box>
                     </ThemeProvider> 
                 ) : (
-                    window.location.replace('/')
+                    typeof window !== 'undefined' && window.location.replace('/')
                 )
             }
         </>

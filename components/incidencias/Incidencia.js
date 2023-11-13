@@ -1,3 +1,5 @@
+'use client'
+
 import * as React from 'react';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Navbar from '../navbar/Navbar';
@@ -5,7 +7,6 @@ import Typography from '@mui/material/Typography';
 import TextField from '@mui/material/TextField';
 import { Button, Grid, RadioGroup } from "@mui/material";
 import { styled, alpha } from '@mui/material/styles';
-import { useState } from 'react';
 import axios from 'axios';
 import Box from '@mui/material/Box';
 import Radio from '@mui/material/Radio';
@@ -54,13 +55,13 @@ export default function Incidencia () {
 
     const router = useRouter()
 
-    const [alumno, setAlumno] = useState('')
+    const [alumno, setAlumno] = React.useState('')
     const handleSetAlumno = (e) => setAlumno(e.target.value)
 
-    const [fecha, setFecha] = useState(new Date())
-    const [mes, setMes] = useState('')
+    const [fecha, setFecha] = React.useState(new Date())
+    const [mes, setMes] = React.useState('')
 
-    const [tipoIncidencia, setTipoIncidencia] = useState('')
+    const [tipoIncidencia, setTipoIncidencia] = React.useState('')
     const handleTipoIncidencia = (e) => {
         setTipoIncidencia(e.target.value)
         if (e.target.value === 'leve') {
@@ -80,19 +81,19 @@ export default function Incidencia () {
         }
     }
 
-    const [leve, setLeve] = useState(false)
-    const [grave, setGrave] = useState(false)
-    const [muyGrave, setMuyGrave] = useState(false)
+    const [leve, setLeve] = React.useState(false)
+    const [grave, setGrave] = React.useState(false)
+    const [muyGrave, setMuyGrave] = React.useState(false)
 
-    const [alumnoEncontrado, setAlumnoEncontrado] = useState(false)
+    const [alumnoEncontrado, setAlumnoEncontrado] = React.useState(false)
 
-    const [alumnoData, setAlumnoData] = useState({})
+    const [alumnoData, setAlumnoData] = React.useState({})
 
-    const [personal, setPersonal] = useState([])
+    const [personal, setPersonal] = React.useState([])
 
-    const [accion, setAccion] = useState('')
-    const [aspecto, setAspecto] = useState('')
-    const [descripcion, setDescripcion] = useState('')
+    const [accion, setAccion] = React.useState('')
+    const [aspecto, setAspecto] = React.useState('')
+    const [descripcion, setDescripcion] = React.useState('')
 
     const handleSetAccion = (e) => setAccion(e.target.value)
     const handleSetAspecto = (e) => setAspecto(e.target.value)

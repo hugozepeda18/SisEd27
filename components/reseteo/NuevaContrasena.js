@@ -1,3 +1,5 @@
+'use client'
+
 import * as React from 'react';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -30,6 +32,12 @@ const defaultTheme = createTheme();
 
 export default function NuevaContrasena() {
 
+  const [key, setKey] = React.useState(undefined)
+
+  React.useEffect(() => {
+        setKey(localStorage.getItem('user'))
+    }, [])
+
   const router = useRouter()
 
   const handleSubmit = async (event) => {
@@ -46,13 +54,13 @@ export default function NuevaContrasena() {
             'Access-Control-Allow-Origin': '*',
           },
           data: {
-            id: localStorage.getItem('user'),
+            id: key,
             password: data.get('password'),
           }
         });
       if (res.status === 200) {
-        localStorage.clear()
-        window.location.replace('/')
+        setKey(localStorage.clear())
+        typeof window !== 'undefined' && window.location.replace('/')
       } else {
         alert('Sucedió un error, inténtelo de nuevo')
       }
