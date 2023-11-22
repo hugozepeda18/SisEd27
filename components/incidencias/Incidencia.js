@@ -43,9 +43,9 @@ const actosGraves = [
 
 const ColorButton = styled(Button)(({ theme }) => ({
     color: 'black',
-    backgroundColor: alpha(theme.palette.common.black, 0.85),
+    backgroundColor: alpha("#b4b4b4", 0.85),
     '&:hover': {
-      backgroundColor: alpha(theme.palette.common.black, 0.35),
+      backgroundColor: alpha("#b4b4b4", 0.50),
     },
 }));
 
