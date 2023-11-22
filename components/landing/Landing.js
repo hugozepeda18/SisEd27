@@ -10,26 +10,14 @@ const defaultTheme = createTheme();
 
 export default function Landing() {
 
-    const [key, setKey] = React.useState(undefined)
-
-    React.useEffect(() => {
-        setKey(localStorage.getItem('jwt'))
-    }, [])
-
     return (
-        <>        
-            {
-                key ? (
-                    <ThemeProvider theme={defaultTheme}>
-                            <Navbar />
-                            <Box sx={{ flexGrow: 1, marginTop: 5 }}> 
-                                <Bienvenida/>
-                            </Box>
-                    </ThemeProvider> 
-                ) : (
-                    typeof window !== 'undefined' && window.location.replace('/')
-                )
-            }
+        <>
+            <ThemeProvider theme={defaultTheme}>
+                    <Navbar />
+                    <Box sx={{ flexGrow: 1, marginTop: 5 }}> 
+                        <Bienvenida/>
+                    </Box>
+            </ThemeProvider>
         </>
     )
 }

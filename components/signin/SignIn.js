@@ -32,8 +32,6 @@ const defaultTheme = createTheme();
 
 export default function SignIn() {
 
-  const [key, setKey] = React.useState(undefined)
-
   const router = useRouter()
 
   const handleSubmit = async (event) => {
@@ -62,7 +60,6 @@ export default function SignIn() {
         })
       if (res) {
         if (res.status === 201) {
-          setKey(localStorage.setItem('jwt', res.data.token))
           router.push('/landing');
         }
       }

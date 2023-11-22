@@ -68,12 +68,6 @@ const ColorButton = styled(Button)(({ theme }) => ({
 
 export default function Navbar() {
 
-    const [key, setKey] = React.useState(undefined)
-
-    React.useEffect(() => {
-        setKey(localStorage.getItem('jwt'))
-    }, [])
-
     const [alumno, setAlumno] = React.useState('')
     const handleSetAlumno = (e) => setAlumno(e.target.value)
 
@@ -96,7 +90,6 @@ export default function Navbar() {
 
     const logout = (event) => {
         event.preventDefault()
-        setKey(localStorage.clear())
         window.location.replace('/')
     }
 
