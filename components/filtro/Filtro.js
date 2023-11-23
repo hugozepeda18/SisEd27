@@ -89,7 +89,7 @@ export default function Filtro() {
     async function getAlumnosGrupoTurnoGrado() {
         let response = await axios({
             method: 'get',
-            url: process.env.NEXT_PUBLIC_URL_BASE_SERVICE + '/alumnos/grado/grupo?grado=' + grado + '&grupo=' + grupoInfo + '&turno=' + turno,
+            url: process.env.NEXT_PUBLIC_URL_BASE_SERVICE + '/alumnos/grupo?grado=' + grado + '&grupo=' + grupoInfo + '&turno=' + turno,
             headers: {
               'Content-Type': 'application/json',
             },
