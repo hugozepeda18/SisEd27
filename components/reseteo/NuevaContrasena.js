@@ -10,8 +10,7 @@ import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Logo from '../utils/Logo';
 import axios from 'axios';
-import { useRouter } from 'next/router'
-
+import { getCookie, deleteCookie } from 'cookies-next';
 
 function Copyright(props) {
   return (
@@ -31,14 +30,6 @@ const defaultTheme = createTheme();
 
 export default function NuevaContrasena() {
 
-  const [key, setKey] = React.useState(undefined)
-
-  React.useEffect(() => {
-        setKey(localStorage.getItem('user'))
-    }, [])
-
-  const router = useRouter()
-
   const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -53,12 +44,13 @@ export default function NuevaContrasena() {
             'Access-Control-Allow-Origin': '*',
           },
           data: {
-            id: key,
+            id: getCookie('user'),
             password: data.get('password'),
           }
         });
       if (res.status === 200) {
-        setKey(localStorage.clear())
+        deleteCookie('user')
+        alert('Contraseña actualizada correctamente')
         typeof window !== 'undefined' && window.location.replace('/')
       } else {
         alert('Sucedió un error, inténtelo de nuevo')
@@ -79,7 +71,7 @@ export default function NuevaContrasena() {
             alignItems: 'center',
           }}
         >
-          <Logo height='200' width='200' image='secundaria27.png'/>
+          <Logo height='200' width='200' image='logo-sin-fondo.png'/>
           <Typography component="h1" variant="h5">
             Recuperando contraseña
           </Typography>

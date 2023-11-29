@@ -93,19 +93,26 @@ export default function Filtro() {
             headers: {
               'Content-Type': 'application/json',
             },
-        })
-        if (response.data.length > 0) {
-            if (router.pathname == '/alumnos') {
-                setRequestAlumnos(response.data)
-                setRequestAlumnosFlag(true)
-            } else if (router.pathname == '/incidencias') {
-                setRequestAlumnos(response.data)
-                setRequestIncidenciasFlag(true)
-            } else if (router.pathname == '/asistencia') {
-                setRequestAlumnos(response.data)
-                setRequestAsistenciaFlag(true)
+        }).catch((error) => {
+            if (error.response) {
+                if (error.response.status === 500) {
+                    alert('No se encontraron alumnos con esas características.')
+                }
             }
-        }
+        }).then((response) => {
+            if (response?.data?.length > 0) {
+                if (router.pathname == '/alumnos') {
+                    setRequestAlumnos(response.data)
+                    setRequestAlumnosFlag(true)
+                } else if (router.pathname == '/incidencias') {
+                    setRequestAlumnos(response.data)
+                    setRequestIncidenciasFlag(true)
+                } else if (router.pathname == '/asistencia') {
+                    setRequestAlumnos(response.data)
+                    setRequestAsistenciaFlag(true)
+                }
+            }
+        })
     }
 
     async function getAlumnosGradoTurno() {
@@ -115,16 +122,26 @@ export default function Filtro() {
             headers: {
               'Content-Type': 'application/json',
             },
-        })
-        if (response.data.length > 0) {
-            if (router.pathname == '/alumnos') {
-                setRequestAlumnos(response.data)
-                setRequestAlumnosFlag(true)
-            } else if (router.pathname == '/incidencias') {
-                setRequestAlumnos(response.data)
-                setRequestIncidenciasFlag(true)
+        }).catch((error) => {
+            if (error.response) {
+                if (error.response.status === 500) {
+                    alert('No se encontraron alumnos con esas características.')
+                }
             }
-        }
+        }).then((response) => {
+            if (response?.data?.length > 0) {
+                if (router.pathname == '/alumnos') {
+                    setRequestAlumnos(response.data)
+                    setRequestAlumnosFlag(true)
+                } else if (router.pathname == '/incidencias') {
+                    setRequestAlumnos(response.data)
+                    setRequestIncidenciasFlag(true)
+                } else if (router.pathname == '/asistencia') {
+                    setRequestAlumnos(response.data)
+                    setRequestAsistenciaFlag(true)
+                }
+            }
+        })
     }
 
     const busqueda = (event) => {

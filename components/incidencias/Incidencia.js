@@ -105,6 +105,7 @@ export default function Incidencia () {
     }
 
     const busquedaAlumno = async (event) => {
+        
         event.preventDefault()
         let res
         if(/\d/.test(alumno)){
@@ -114,16 +115,30 @@ export default function Incidencia () {
                 headers: {
                   'Content-Type': 'application/json',
                 },                    
+            }).catch((error) => {
+                if (error.response) {
+                    if (error.response.status === 500) {
+                        alert('No se encontró alumno con matrícula ' + alumno)
+                    }
+                }
             })
         } else {
             const separateName = alumno.split(' ')
-            if (separateName.length === 3){
+            if (separateName.length === 2) {
+                alert('Favor de escribir nombre completo')
+            } else if (separateName.length === 3){
                 res = await axios({
                     method: 'get',
                     url: process.env.NEXT_PUBLIC_URL_BASE_SERVICE + '/alumnos/nombre?nombre=' + separateName[0] + '&apellido_paterno=' + separateName[1] + '&apellido_materno=' + separateName[2],
                     headers: {
                       'Content-Type': 'application/json',
                     },                    
+                }).catch((error) => {
+                    if (error.response) {
+                        if (error.response.status === 500) {
+                            alert(`No se encontró alumno con ese nombre [${separateName[0]} ${separateName[1]} ${separateName[2]}], favor de volver a intentarlo`)
+                        }
+                    }
                 })
             } else if (separateName.length === 4) {
                 res = await axios({
@@ -132,6 +147,12 @@ export default function Incidencia () {
                     headers: {
                       'Content-Type': 'application/json',
                     },                    
+                }).catch((error) => {
+                    if (error.response) {
+                        if (error.response.status === 500) {
+                            alert(`No se encontró alumno con ese nombre [${separateName[0]} ${separateName[1]} ${separateName[2]} ${separateName[3]}], favor de volver a intentarlo`)
+                        }
+                    }
                 })
             } else {
                 res = await axios({
@@ -140,10 +161,16 @@ export default function Incidencia () {
                     headers: {
                       'Content-Type': 'application/json',
                     },                    
+                }).catch((error) => {
+                    if (error.response) {
+                        if (error.response.status === 500) {
+                            alert(`No se encontró alumno con ese nombre [${separateName[0]} ${separateName[1]} ${separateName[2]} ${separateName[3]} ${separateName[4]}], favor de volver a intentarlo`)
+                        }
+                    }
                 })
             }
         }
-        if (res.data.length === 1) {
+        if (res?.data?.length === 1) {
             setAlumnoData(res.data[0])
             setAlumnoEncontrado(true)
             setFecha(new Date())
@@ -249,7 +276,7 @@ export default function Incidencia () {
                   'Content-Type': 'application/json',
                 },                    
             })
-            if (response.data.length > 0) {
+            if (response?.data?.length > 0) {
                 setPersonal(response.data)
             }
         }

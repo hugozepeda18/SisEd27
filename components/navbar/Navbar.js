@@ -17,6 +17,7 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import Link from "next/link";
 import * as React from 'react';
 import axios from 'axios';
+import { deleteCookie } from 'cookies-next';
 
 const Search = styled('div')(({ theme }) => ({
     position: 'relative',
@@ -90,7 +91,8 @@ export default function Navbar() {
 
     const logout = (event) => {
         event.preventDefault()
-        window.location.replace('/')
+        deleteCookie('token')
+        router.push('/')
     }
 
     const alumnoName = (event) => {
@@ -109,16 +111,30 @@ export default function Navbar() {
                     headers: {
                       'Content-Type': 'application/json',
                     },                    
+                }).catch((error) => {
+                    if (error.response) {
+                        if (error.response.status === 500) {
+                            alert('No se encontró alumno con matrícula ' + alumno)
+                        }
+                    }
                 })
             } else {
                 const separateName = alumno.split(' ')
-                if (separateName.length === 3){
+                if (separateName.length === 2) {
+                    alert('Favor de escribir nombre completo')
+                } else if (separateName.length === 3){
                     res = await axios({
                         method: 'get',
                         url: process.env.NEXT_PUBLIC_URL_BASE_SERVICE + '/alumnos/nombre?nombre=' + separateName[0] + '&apellido_paterno=' + separateName[1] + '&apellido_materno=' + separateName[2],
                         headers: {
                           'Content-Type': 'application/json',
                         },                    
+                    }).catch((error) => {
+                        if (error.response) {
+                            if (error.response.status === 500) {
+                                alert(`No se encontró alumno con ese nombre [${separateName[0]} ${separateName[1]} ${separateName[2]}], favor de volver a intentarlo`)
+                            }
+                        }
                     })
                 } else if (separateName.length === 4) {
                     res = await axios({
@@ -127,18 +143,30 @@ export default function Navbar() {
                         headers: {
                           'Content-Type': 'application/json',
                         },                    
+                    }).catch((error) => {
+                        if (error.response) {
+                            if (error.response.status === 500) {
+                                alert(`No se encontró alumno con ese nombre [${separateName[0]} ${separateName[1]} ${separateName[2]} ${separateName[3]}], favor de volver a intentarlo`)
+                            }
+                        }
                     })
-                } else {
+                } else if (separateName.length === 5) {
                     res = await axios({
                         method: 'get',
                         url: process.env.NEXT_PUBLIC_URL_BASE_SERVICE + '/alumnos/nombre?nombre=' + separateName[0] + ' ' + separateName[1] + ' ' + separateName[2] + '&apellido_paterno=' + separateName[3] + '&apellido_materno=' + separateName[4],
                         headers: {
                           'Content-Type': 'application/json',
                         },                    
+                    }).catch((error) => {
+                        if (error.response) {
+                            if (error.response.status === 500) {
+                                alert(`No se encontró alumno con ese nombre [${separateName[0]} ${separateName[1]} ${separateName[2]} ${separateName[3]} ${separateName[4]}], favor de volver a intentarlo`)
+                            }
+                        }
                     })
                 }
             }
-            if (res.data.length === 1) {
+            if (res?.data?.length === 1) {
                 router.push('/alumnos/alumno?matricula=' + res.data[0].matricula)
             }
         }

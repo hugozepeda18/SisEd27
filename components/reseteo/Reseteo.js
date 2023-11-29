@@ -4,7 +4,6 @@ import * as React from 'react';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import Link from '@mui/material/Link';
-import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
@@ -12,7 +11,7 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Logo from '../utils/Logo';
 import axios from 'axios';
 import { useRouter } from 'next/router'
-
+import { setCookie } from 'cookies-next';
 
 function Copyright(props) {
   return (
@@ -32,8 +31,6 @@ const defaultTheme = createTheme();
 
 export default function Reseteo() {
 
-  const [key, setKey] = React.useState(undefined)
-
   const router = useRouter()
 
   const handleSubmit = async (event) => {
@@ -51,7 +48,7 @@ export default function Reseteo() {
           }
         });
       if (res.status === 200) {
-        setKey(localStorage.setItem('user', res.data.id))
+        setCookie('user', res.data.id)
         router.push('/reset/contrasena')
       } else {
         alert('Sucedió un error, inténtelo de nuevo')
@@ -72,7 +69,7 @@ export default function Reseteo() {
             alignItems: 'center',
           }}
         >
-          <Logo height='200' width='200' image='secundaria27.png'/>
+          <Logo height='200' width='200' image='logo-sin-fondo.png'/>
           <Typography component="h1" variant="h5">
             Recuperando contraseña
           </Typography>

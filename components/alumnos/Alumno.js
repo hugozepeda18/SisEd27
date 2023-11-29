@@ -38,7 +38,7 @@ export default function Alumno() {
                   'Content-Type': 'application/json',
                 },                    
             })
-            if (response.data.length === 1) {
+            if (response?.data?.length === 1) {
                 setAlumno(response.data[0])
                 setAlumnoExist(true)
             }
@@ -54,10 +54,16 @@ export default function Alumno() {
                 headers: {
                   'Content-Type': 'application/json',
                 },                    
+            }).catch((error) => {
+                if (error.response) {
+                    if (error.response.status === 500) {
+                        alert('Intente de nuevo')
+                    }
+                }
             })
-            if (response.data.length == 0) setNoReports(true)
+            if (response?.data?.length == 0) setNoReports(true)
             else {
-                setAlumnoReportes(response.data)
+                setAlumnoReportes(response?.data)
                 setNoReports(false)
             }
         }
@@ -185,7 +191,7 @@ export default function Alumno() {
                                         </TableRow>
                                         </TableHead>
                                         <TableBody>
-                                        {alumnoReportes.sort(function (a, b) {
+                                        {alumnoReportes?.sort(function (a, b) {
                                             return a.tipo - b.tipo
                                         }).map((row) => (
                                             <TableRow

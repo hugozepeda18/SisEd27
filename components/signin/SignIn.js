@@ -12,6 +12,7 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Logo from '../utils/Logo';
 import axios from 'axios';
 import { useRouter } from 'next/router'
+import { setCookie } from 'cookies-next';
 
 function Copyright(props) {
   return (
@@ -59,6 +60,7 @@ export default function SignIn() {
         })
       if (res) {
         if (res.status === 201) {
+          setCookie('token', res.data.token)
           router.push('/landing');
         }
       }
