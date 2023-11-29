@@ -31,6 +31,8 @@ const defaultTheme = createTheme();
 
 export default function SignIn() {
 
+  const { data: session } = useSession()
+
   const router = useRouter()
 
   const handleSubmit = async (event) => {

@@ -1,10 +1,10 @@
-import SignIn from "@/components/signin/SignIn";
+import Landing from "@/components/landing/Landing";
 
 export default function Home() {
 
   return (
     <>
-      <SignIn />
+      <Landing />
     </>
   )
 }

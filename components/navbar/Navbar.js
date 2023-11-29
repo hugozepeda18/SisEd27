@@ -17,6 +17,7 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import Link from "next/link";
 import * as React from 'react';
 import axios from 'axios';
+import { signOut } from 'next-auth/react';
 
 const Search = styled('div')(({ theme }) => ({
     position: 'relative',
@@ -178,7 +179,7 @@ export default function Navbar() {
                             <ReportIcon />
                             Incidencias
                         </ColorButton>
-                        <ColorButton variant="contained" onClick={logout}>
+                        <ColorButton variant="contained" onClick={() => signOut()}>
                             <LogoutIcon />
                             Salir
                         </ColorButton>
