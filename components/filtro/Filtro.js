@@ -36,7 +36,7 @@ export default function Filtro() {
     const [turno, setTurno] = React.useState(false)
     const [matutino, setMatutino] = React.useState(false)
     const [grupo, setGrupo] = React.useState(false)
-    
+
     const [requestAlumnos, setRequestAlumnos] = React.useState([])
 
     const [requestAlumnosGrado, setRequestAlumnosGrado] = React.useState([])
@@ -107,14 +107,22 @@ export default function Filtro() {
             gradoFilter = requestAlumnos.filter((alumno) => alumno.grado == '3')
         }
         setRequestAlumnosGrado(gradoFilter)
-        setRequestAlumnosFlag(false)
         setGrupo(true)
         if (router.pathname == '/alumnos') {
+            setRequestAlumnosFlag(false)
             setGrado(true)
+            setGradoAsistencia(false)
+            setGradoIncidencias(false)
         } else if (router.pathname == '/incidencias') {
+            setRequestIncidenciasFlag(false)
             setGradoIncidencias(true)
+            setGrado(false)
+            setGradoAsistencia(false)
         } else if (router.pathname == '/asistencia') {
+            setRequestAsistenciaFlag(false)
             setGradoAsistencia(true)
+            setGrado(false)
+            setGradoIncidencias(false)
         }
     }
 
@@ -133,13 +141,15 @@ export default function Filtro() {
             grupoFilter = requestAlumnosGrado.filter((alumno) => alumno.grupo == 'E')
         }
         setRequestAlumnosGrupo(grupoFilter)
-        setGrado(false)
         setGrupo(true)
         if (router.pathname == '/alumnos') {
+            setGrado(false)
             setRequestAlumnosGrupoFlag(true)
         } else if (router.pathname == '/incidencias') {
+            setGradoIncidencias(false)
             setRequestAlumnosGrupoIncidenciasFlag(true)
         } else if (router.pathname == '/asistencia') {
+            setGradoAsistencia(false)
             setRequestAlumnosGrupoAsistenciaFlag(true)
         }
     }
