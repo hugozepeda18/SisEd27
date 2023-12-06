@@ -184,7 +184,6 @@ export default function Filtro() {
                             direction="row"
                             justifyContent="center"
                             alignItems="center"
-                            marginBottom={3}
                             >
                                 <GroupIcon fontSize="large"/> 
                                 <ColorButton size="large" variant="contained" value="1" onClick={gruposButtons}>1</ColorButton>
