@@ -8,8 +8,6 @@ import WbSunnyIcon from '@mui/icons-material/WbSunny';
 import WbTwilightIcon from '@mui/icons-material/WbTwilight';
 import { useRouter } from 'next/router'
 import GroupIcon from '@mui/icons-material/Group';
-import Typography from '@mui/material/Typography';
-import ManageSearchIcon from '@mui/icons-material/ManageSearch';
 import axios from 'axios';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -34,13 +32,20 @@ export default function Filtro() {
 
     const router = useRouter()
 
-    const [turno, setTurno] = React.useState('')
+    const [turnoSeleccionado, setTurnoSeleccionado] = React.useState('')
+    const [turno, setTurno] = React.useState(false)
     const [matutino, setMatutino] = React.useState(false)
-    const [grado, setGrado] = React.useState('')
     const [grupo, setGrupo] = React.useState(false)
+
     const [grupoInfo, setGrupoInfo] = React.useState('')
-    const [button, setButton] = React.useState(false)
     const [requestAlumnos, setRequestAlumnos] = React.useState([])
+
+    const [requestAlumnosGrado, setRequestAlumnosGrado] = React.useState([])
+    const [grado, setGrado] = React.useState(false)
+
+    const [requestAlumnosGrupo, setRequestAlumnosGrupo] = React.useState([])
+    const [requestAlumnosGrupoFlag, setRequestAlumnosGrupoFlag] = React.useState(false)
+
     const [requestAlumnosFlag, setRequestAlumnosFlag] = React.useState(false)
     const [requestIncidenciasFlag, setRequestIncidenciasFlag] = React.useState(false)
     const [requestAsistenciaFlag, setRequestAsistenciaFlag] = React.useState(false)
@@ -48,124 +53,79 @@ export default function Filtro() {
     const gradosButtons = (event) => {
         event.preventDefault()
         if(event.target.value == 'M'){
-            setTurno('M')
+            getAlumnosTurno('M')
+            setTurnoSeleccionado('M')
         } else {
-            setTurno('V')
+            getAlumnosTurno('V')
+            setTurnoSeleccionado('V')
         }
+        setTurno(true)
         setMatutino(true)
+    }
+
+    async function getAlumnosTurno(turno) {
+        await axios({
+            method: 'get',
+            url: process.env.NEXT_PUBLIC_URL_BASE_SERVICE + '/alumnos/turno?turno=' + turno,
+            headers: {
+              'Content-Type': 'application/json',
+            },
+        }).catch((error) => {
+            if (error.response) {
+                if (error.response.status === 500) {
+                    alert('No se encontraron alumnos con esas características.')
+                }
+            }
+        }).then((response) => {
+            if (response?.data?.length > 0) {
+                if (router.pathname == '/alumnos') {
+                    setRequestAlumnos(response.data)
+                    setRequestAlumnosFlag(true)
+                } else if (router.pathname == '/incidencias') {
+                    setRequestAlumnos(response.data)
+                    setRequestIncidenciasFlag(true)
+                } else if (router.pathname == '/asistencia') {
+                    setRequestAlumnos(response.data)
+                    setRequestAsistenciaFlag(true)
+                }
+            }
+        })
     }
 
     const gruposButtons = (event) => {
         event.preventDefault()
+        let gradoFilter = []
         if(event.target.value == '1'){
-            setGrado('1')
+            gradoFilter = requestAlumnos.filter((alumno) => alumno.grado == '1')
         } else if (event.target.value == '2'){
-            setGrado('2')
+            gradoFilter = requestAlumnos.filter((alumno) => alumno.grado == '2')
         } else if (event.target.value == '3'){
-            setGrado('3')
+            gradoFilter = requestAlumnos.filter((alumno) => alumno.grado == '3')
         }
+        setRequestAlumnosGrado(gradoFilter)
+        setRequestAlumnosFlag(false)
         setGrupo(true)
+        setGrado(true)
     }
 
     const grupoInfoView = (event) => { 
         event.preventDefault()
+        let grupoFilter = []
         if(event.target.value == 'A'){
-            setGrupoInfo('A')
+            grupoFilter = requestAlumnosGrado.filter((alumno) => alumno.grupo == 'A')
         } else if (event.target.value == 'B'){
-            setGrupoInfo('B')
+            grupoFilter = requestAlumnosGrado.filter((alumno) => alumno.grupo == 'B')
         } else if (event.target.value == 'C'){
-            setGrupoInfo('C')
+            grupoFilter = requestAlumnosGrado.filter((alumno) => alumno.grupo == 'C')
         } else if (event.target.value == 'D'){
-            setGrupoInfo('D')
+            grupoFilter = requestAlumnosGrado.filter((alumno) => alumno.grupo == 'D')
         } else if (event.target.value == 'E'){
-            setGrupoInfo('E')
-        } else if (event.target.value == 'X'){
-            setGrupoInfo('')
-            setGrupo(false)
+            grupoFilter = requestAlumnosGrado.filter((alumno) => alumno.grupo == 'E')
         }
-        setButton(true)
-    }
-
-    async function getAlumnosGrupoTurnoGrado() {
-        let response = await axios({
-            method: 'get',
-            url: process.env.NEXT_PUBLIC_URL_BASE_SERVICE + '/alumnos/grupo?grado=' + grado + '&grupo=' + grupoInfo + '&turno=' + turno,
-            headers: {
-              'Content-Type': 'application/json',
-            },
-        }).catch((error) => {
-            if (error.response) {
-                if (error.response.status === 500) {
-                    alert('No se encontraron alumnos con esas características.')
-                }
-            }
-        }).then((response) => {
-            if (response?.data?.length > 0) {
-                if (router.pathname == '/alumnos') {
-                    setRequestAlumnos(response.data)
-                    setRequestAlumnosFlag(true)
-                } else if (router.pathname == '/incidencias') {
-                    setRequestAlumnos(response.data)
-                    setRequestIncidenciasFlag(true)
-                } else if (router.pathname == '/asistencia') {
-                    setRequestAlumnos(response.data)
-                    setRequestAsistenciaFlag(true)
-                }
-            }
-        })
-    }
-
-    async function getAlumnosGradoTurno() {
-        let response = await axios({
-            method: 'get',
-            url: process.env.NEXT_PUBLIC_URL_BASE_SERVICE + '/alumnos/grado?grado=' + grado + '&turno=' + turno,
-            headers: {
-              'Content-Type': 'application/json',
-            },
-        }).catch((error) => {
-            if (error.response) {
-                if (error.response.status === 500) {
-                    alert('No se encontraron alumnos con esas características.')
-                }
-            }
-        }).then((response) => {
-            if (response?.data?.length > 0) {
-                if (router.pathname == '/alumnos') {
-                    setRequestAlumnos(response.data)
-                    setRequestAlumnosFlag(true)
-                } else if (router.pathname == '/incidencias') {
-                    setRequestAlumnos(response.data)
-                    setRequestIncidenciasFlag(true)
-                } else if (router.pathname == '/asistencia') {
-                    setRequestAlumnos(response.data)
-                    setRequestAsistenciaFlag(true)
-                }
-            }
-        })
-    }
-
-    const busqueda = (event) => {
-        event.preventDefault()
-        switch (router.pathname) {
-            case '/alumnos':
-                if (grupoInfo == '') {
-                    getAlumnosGradoTurno()
-                } else {
-                    getAlumnosGrupoTurnoGrado()
-                }
-            case '/incidencias':
-                if (grupoInfo == '') {
-                    getAlumnosGradoTurno()
-                } else {
-                    getAlumnosGrupoTurnoGrado()
-                }
-            case '/asistencia': 
-                if (grupoInfo == '') {
-                    getAlumnosGradoTurno()
-                } else {
-                    getAlumnosGrupoTurnoGrado()
-                }
-        }
+        setRequestAlumnosGrupo(grupoFilter)
+        setRequestAlumnosGrupoFlag(true)
+        setGrado(false)
+        setGrupo(true)
     }
 
     return (
@@ -185,7 +145,7 @@ export default function Filtro() {
                         alignItems="center"
                         >
                         <WbSunnyIcon fontSize="large"/>
-                        <ColorButton size="large" variant="contained" value="M" onClick={gradosButtons}>Turno Matutino</ColorButton>
+                        <ColorButton size="large" variant="contained" value="M" onClick={gradosButtons}>Matutino</ColorButton>
                     </Grid>
                 </Grid>
                 <Grid item xs={3} justifyContent='center'>
@@ -196,7 +156,7 @@ export default function Filtro() {
                         alignItems="center"
                         >
                         <WbTwilightIcon fontSize="large"/> 
-                        <ColorButton size="large" variant="contained" value="V" onClick={gradosButtons}>Turno Vespertino</ColorButton>
+                        <ColorButton size="large" variant="contained" value="V" onClick={gradosButtons}>Vespertino</ColorButton>
                     </Grid>
                 </Grid>
                 { matutino && (
@@ -291,73 +251,29 @@ export default function Filtro() {
                                 <ColorButton size="large" variant="contained" value="D" onClick={grupoInfoView}>D</ColorButton>
                             </Grid>
                         </Grid>
-                        <Grid item xs={1} justifyContent='center'>
-                            <Grid
-                            container
-                            direction="row"
-                            justifyContent="center"
-                            alignItems="center"
-                            >
-                                <GroupIcon fontSize="large"/> 
-                                <ColorButton size="large" variant="contained" value="E" onClick={grupoInfoView}>E</ColorButton>
-                            </Grid>
-                        </Grid>
-                        <Grid item xs={2} justifyContent='center'>
-                            <Grid
-                            container
-                            direction="row"
-                            justifyContent="center"
-                            alignItems="center"
-                            >
-                                <GroupIcon fontSize="large"/> 
-                                <ColorButton size="large" variant="contained" value="X" onClick={grupoInfoView}>Sin grupo</ColorButton>
-                            </Grid>
-                        </Grid>
+                        {
+                            turnoSeleccionado == 'M' && (
+                                <Grid item xs={1} justifyContent='center'>
+                                    <Grid
+                                    container
+                                    direction="row"
+                                    justifyContent="center"
+                                    alignItems="center"
+                                    >
+                                        <GroupIcon fontSize="large"/> 
+                                        <ColorButton size="large" variant="contained" value="E" onClick={grupoInfoView}>E</ColorButton>
+                                    </Grid>
+                                </Grid>
+                            ) 
+                        }
                     </Grid>
                 )
             }
-            {  button && (
-                <Grid 
-                    container 
-                    spacing={2}
-                    direction="row"
-                    justifyContent="center"
-                    alignItems="center"
-                    marginTop={3}
-                    marginBottom={3}
-                >
-                    <Grid item xs={3} justifyContent='center'>
-                        <Grid
-                        container
-                        direction="row"
-                        justifyContent="center"
-                        alignItems="center"
-                        >
-                            <Typography component="h3" variant="h5" fontWeight="medium">
-                                Solicitud: {grado}-{grupoInfo}  {turno == 'M' ? 'Matutino' : 'Vespertino'} 
-                            </Typography>
-                        </Grid>
-                    </Grid>
-                    <Grid item xs={3} justifyContent='center'>
-                        <Grid
-                        container
-                        direction="row"
-                        justifyContent="center"
-                        alignItems="center"
-                        >
-                            <ColorButton size="large" variant="contained" value="E" onClick={busqueda}>
-                                <ManageSearchIcon 
-                                    fontSize='large'
-                                />
-                                Buscar
-                            </ColorButton>
-                        </Grid>
-                    </Grid>
-                </Grid>
-                )
-            }
+            
+
+             {/* /alumnos endpoint */}
             {
-                requestAlumnosFlag && (
+                turno && requestAlumnosFlag && (
                     <>
                         <TableContainer component={Paper}  paddingLeft={9} >
                         <Table>
@@ -416,6 +332,125 @@ export default function Filtro() {
                 )
             }
             {
+                turno && grado && (
+                    <>
+                        <TableContainer component={Paper}  paddingLeft={9} >
+                        <Table>
+                            <TableHead>
+                            <TableRow>
+                                <TableCell>Matricula</TableCell>
+                                <TableCell>Nombre Completo</TableCell>
+                                <TableCell>CURP</TableCell>
+                                <TableCell align="right">Grado</TableCell>
+                                <TableCell align="right">Grupo</TableCell>
+                                <TableCell align="right">Turno</TableCell>
+                                <TableCell align="right">Sexo</TableCell>
+                                <TableCell align="right">Edad</TableCell>
+                            </TableRow>
+                            </TableHead>
+                            <TableBody>
+                            {requestAlumnosGrado.map((row) => (
+                                <TableRow
+                                key={row.name}
+                                sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                                >
+                                    <TableCell component="th" scope="row">
+                                        <Link
+                                            onClick={(event) => {
+                                                event.preventDefault()
+                                                router.push('/alumnos/alumno?matricula=' + row.matricula)
+                                            }}
+                                            href="#"
+                                        >
+                                            {row.matricula}
+                                        </Link>
+                                    </TableCell>
+                                    <TableCell>
+                                        <Link
+                                            onClick={(event) => {
+                                                event.preventDefault()
+                                                router.push('/alumnos/alumno?matricula=' + row.matricula)
+                                            }}
+                                            href="#"
+                                        >
+                                            {row.nombre + ' ' + row.apellido_paterno + ' ' + row.apellido_materno}
+                                        </Link>
+                                    </TableCell>
+                                    <TableCell>{row.curp}</TableCell>
+                                    <TableCell align="right">{row.grado}</TableCell>
+                                    <TableCell align="right">{row.grupo}</TableCell>
+                                    <TableCell align="right">{row.turno}</TableCell>
+                                    <TableCell align="right">{row.sexo}</TableCell>
+                                    <TableCell align="right">{row.edad}</TableCell>
+                                </TableRow>
+                            ))}
+                            </TableBody>
+                        </Table>
+                        </TableContainer>
+                    </>
+                )
+            }
+            {
+                turno && requestAlumnosGrupoFlag && (
+                    <>
+                        <TableContainer component={Paper}  paddingLeft={9} >
+                        <Table>
+                            <TableHead>
+                            <TableRow>
+                                <TableCell>Matricula</TableCell>
+                                <TableCell>Nombre Completo</TableCell>
+                                <TableCell>CURP</TableCell>
+                                <TableCell align="right">Grado</TableCell>
+                                <TableCell align="right">Grupo</TableCell>
+                                <TableCell align="right">Turno</TableCell>
+                                <TableCell align="right">Sexo</TableCell>
+                                <TableCell align="right">Edad</TableCell>
+                            </TableRow>
+                            </TableHead>
+                            <TableBody>
+                            {requestAlumnosGrupo.map((row) => (
+                                <TableRow
+                                key={row.name}
+                                sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                                >
+                                    <TableCell component="th" scope="row">
+                                        <Link
+                                            onClick={(event) => {
+                                                event.preventDefault()
+                                                router.push('/alumnos/alumno?matricula=' + row.matricula)
+                                            }}
+                                            href="#"
+                                        >
+                                            {row.matricula}
+                                        </Link>
+                                    </TableCell>
+                                    <TableCell>
+                                        <Link
+                                            onClick={(event) => {
+                                                event.preventDefault()
+                                                router.push('/alumnos/alumno?matricula=' + row.matricula)
+                                            }}
+                                            href="#"
+                                        >
+                                            {row.nombre + ' ' + row.apellido_paterno + ' ' + row.apellido_materno}
+                                        </Link>
+                                    </TableCell>
+                                    <TableCell>{row.curp}</TableCell>
+                                    <TableCell align="right">{row.grado}</TableCell>
+                                    <TableCell align="right">{row.grupo}</TableCell>
+                                    <TableCell align="right">{row.turno}</TableCell>
+                                    <TableCell align="right">{row.sexo}</TableCell>
+                                    <TableCell align="right">{row.edad}</TableCell>
+                                </TableRow>
+                            ))}
+                            </TableBody>
+                        </Table>
+                        </TableContainer>
+                    </>
+                )
+            }
+
+            {/* {
                 requestIncidenciasFlag && (
                     <>
                         <TableContainer component={Paper}  paddingLeft={9} >
@@ -514,7 +549,7 @@ export default function Filtro() {
                         </TableContainer>
                     </>
                 )
-            }
+            } */}
         </ThemeProvider>
     )
 }
