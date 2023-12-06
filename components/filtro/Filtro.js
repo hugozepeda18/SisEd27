@@ -42,9 +42,13 @@ export default function Filtro() {
 
     const [requestAlumnosGrado, setRequestAlumnosGrado] = React.useState([])
     const [grado, setGrado] = React.useState(false)
+    const [gradoAsistencia, setGradoAsistencia] = React.useState(false)
+    const [gradoIncidencias, setGradoIncidencias] = React.useState(false)
 
     const [requestAlumnosGrupo, setRequestAlumnosGrupo] = React.useState([])
     const [requestAlumnosGrupoFlag, setRequestAlumnosGrupoFlag] = React.useState(false)
+    const [requestAlumnosGrupoAsistenciaFlag, setRequestAlumnosGrupoAsistenciaFlag] = React.useState(false)
+    const [requestAlumnosGrupoIncidenciasFlag, setRequestAlumnosGrupoIncidenciasFlag] = React.useState(false)
 
     const [requestAlumnosFlag, setRequestAlumnosFlag] = React.useState(false)
     const [requestIncidenciasFlag, setRequestIncidenciasFlag] = React.useState(false)
@@ -105,7 +109,13 @@ export default function Filtro() {
         setRequestAlumnosGrado(gradoFilter)
         setRequestAlumnosFlag(false)
         setGrupo(true)
-        setGrado(true)
+        if (router.pathname == '/alumnos') {
+            setGrado(true)
+        } else if (router.pathname == '/incidencias') {
+            setGradoIncidencias(true)
+        } else if (router.pathname == '/asistencia') {
+            setGradoAsistencia(true)
+        }
     }
 
     const grupoInfoView = (event) => { 
@@ -123,9 +133,15 @@ export default function Filtro() {
             grupoFilter = requestAlumnosGrado.filter((alumno) => alumno.grupo == 'E')
         }
         setRequestAlumnosGrupo(grupoFilter)
-        setRequestAlumnosGrupoFlag(true)
         setGrado(false)
         setGrupo(true)
+        if (router.pathname == '/alumnos') {
+            setRequestAlumnosGrupoFlag(true)
+        } else if (router.pathname == '/incidencias') {
+            setRequestAlumnosGrupoIncidenciasFlag(true)
+        } else if (router.pathname == '/asistencia') {
+            setRequestAlumnosGrupoAsistenciaFlag(true)
+        }
     }
 
     return (
@@ -136,6 +152,7 @@ export default function Filtro() {
                 direction="row"
                 justifyContent="center"
                 alignItems="center"
+                marginBottom={3}
             >
                 <Grid item xs={2} justifyContent='center'>
                     <Grid
@@ -167,6 +184,7 @@ export default function Filtro() {
                             direction="row"
                             justifyContent="center"
                             alignItems="center"
+                            marginBottom={3}
                             >
                                 <GroupIcon fontSize="large"/> 
                                 <ColorButton size="large" variant="contained" value="1" onClick={gruposButtons}>1</ColorButton>
@@ -206,6 +224,7 @@ export default function Filtro() {
                         justifyContent="center"
                         alignItems="center"
                         marginTop={3}
+                        marginBottom={3}
                     >
                         <Grid item xs={1} justifyContent='center'>
                             <Grid
@@ -271,7 +290,7 @@ export default function Filtro() {
             }
             
 
-             {/* /alumnos endpoint */}
+            {/* /alumnos endpoint */}
             {
                 turno && requestAlumnosFlag && (
                     <>
@@ -450,8 +469,9 @@ export default function Filtro() {
                 )
             }
 
-            {/* {
-                requestIncidenciasFlag && (
+            {/* /incidencias endpoint */}
+            {
+                turno && requestIncidenciasFlag && (
                     <>
                         <TableContainer component={Paper}  paddingLeft={9} >
                         <Table>
@@ -504,7 +524,115 @@ export default function Filtro() {
                 )
             }
             {
-                requestAsistenciaFlag && (
+                turno && gradoIncidencias && (
+                    <>
+                        <TableContainer component={Paper}  paddingLeft={9} >
+                        <Table>
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell>Matrícula</TableCell>
+                                    <TableCell>Nombre Completo</TableCell>
+                                    <TableCell>Incidencias Leves</TableCell>
+                                    <TableCell>Incidencias Graves</TableCell>
+                                    <TableCell>Incidencias Muy Graves</TableCell>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                            {requestAlumnosGrado.map((row) => (
+                                <TableRow
+                                key={row.name}
+                                sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                                >
+                                    <TableCell component="th" scope="row">
+                                        <Link
+                                            onClick={(event) => {
+                                                event.preventDefault()
+                                                router.push('/alumnos/alumno?matricula=' + row.matricula)
+                                            }}
+                                            href="#"
+                                        >
+                                            {row.matricula}
+                                        </Link>
+                                    </TableCell>
+                                    <TableCell>
+                                        <Link
+                                            onClick={(event) => {
+                                                event.preventDefault()
+                                                router.push('/alumnos/alumno?matricula=' + row.matricula)
+                                            }}
+                                            href="#"
+                                        >
+                                            {row.nombre + ' ' + row.apellido_paterno + ' ' + row.apellido_materno}
+                                        </Link>
+                                    </TableCell>
+                                    <TableCell>{row.incidencias}</TableCell>
+                                    <TableCell>{row.incidencias_graves}</TableCell>
+                                    <TableCell>{row.incidencias_muy_graves}</TableCell>
+                                </TableRow>
+                            ))}
+                            </TableBody>
+                        </Table>
+                        </TableContainer>
+                    </>
+                )
+            }
+            {
+                turno && requestAlumnosGrupoIncidenciasFlag && (
+                    <>
+                        <TableContainer component={Paper}  paddingLeft={9} >
+                        <Table>
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell>Matrícula</TableCell>
+                                    <TableCell>Nombre Completo</TableCell>
+                                    <TableCell>Incidencias Leves</TableCell>
+                                    <TableCell>Incidencias Graves</TableCell>
+                                    <TableCell>Incidencias Muy Graves</TableCell>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                            {requestAlumnosGrupo.map((row) => (
+                                <TableRow
+                                key={row.name}
+                                sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                                >
+                                    <TableCell component="th" scope="row">
+                                        <Link
+                                            onClick={(event) => {
+                                                event.preventDefault()
+                                                router.push('/alumnos/alumno?matricula=' + row.matricula)
+                                            }}
+                                            href="#"
+                                        >
+                                            {row.matricula}
+                                        </Link>
+                                    </TableCell>
+                                    <TableCell>
+                                        <Link
+                                            onClick={(event) => {
+                                                event.preventDefault()
+                                                router.push('/alumnos/alumno?matricula=' + row.matricula)
+                                            }}
+                                            href="#"
+                                        >
+                                            {row.nombre + ' ' + row.apellido_paterno + ' ' + row.apellido_materno}
+                                        </Link>
+                                    </TableCell>
+                                    <TableCell>{row.incidencias}</TableCell>
+                                    <TableCell>{row.incidencias_graves}</TableCell>
+                                    <TableCell>{row.incidencias_muy_graves}</TableCell>
+                                </TableRow>
+                            ))}
+                            </TableBody>
+                        </Table>
+                        </TableContainer>
+                    </>
+                )
+            }
+
+            {/* /asistencia endpoint */}
+            {
+                turno && requestAsistenciaFlag && (
                     <>
                         <TableContainer component={Paper}  paddingLeft={9} >
                         <Table>
@@ -549,7 +677,101 @@ export default function Filtro() {
                         </TableContainer>
                     </>
                 )
-            } */}
+            }
+            {
+                turno && gradoAsistencia && (
+                    <>
+                        <TableContainer component={Paper}  paddingLeft={9} >
+                        <Table>
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell>Matrícula</TableCell>
+                                    <TableCell>Nombre Completo</TableCell>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                            {requestAlumnosGrado.map((row) => (
+                                <TableRow
+                                key={row.name}
+                                sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                                >
+                                    <TableCell component="th" scope="row">
+                                        <Link
+                                            onClick={(event) => {
+                                                event.preventDefault()
+                                                router.push('/alumnos/alumno?matricula=' + row.matricula)
+                                            }}
+                                            href="#"
+                                        >
+                                            {row.matricula}
+                                        </Link>
+                                    </TableCell>
+                                    <TableCell>
+                                        <Link
+                                            onClick={(event) => {
+                                                event.preventDefault()
+                                                router.push('/alumnos/alumno?matricula=' + row.matricula)
+                                            }}
+                                            href="#"
+                                        >
+                                            {row.nombre + ' ' + row.apellido_paterno + ' ' + row.apellido_materno}
+                                        </Link>
+                                    </TableCell>
+                                </TableRow>
+                            ))}
+                            </TableBody>
+                        </Table>
+                        </TableContainer>
+                    </>
+                )
+            }
+            {
+                turno && requestAlumnosGrupoAsistenciaFlag && (
+                    <>
+                        <TableContainer component={Paper}  paddingLeft={9} >
+                        <Table>
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell>Matrícula</TableCell>
+                                    <TableCell>Nombre Completo</TableCell>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                            {requestAlumnosGrupo.map((row) => (
+                                <TableRow
+                                key={row.name}
+                                sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                                >
+                                    <TableCell component="th" scope="row">
+                                        <Link
+                                            onClick={(event) => {
+                                                event.preventDefault()
+                                                router.push('/alumnos/alumno?matricula=' + row.matricula)
+                                            }}
+                                            href="#"
+                                        >
+                                            {row.matricula}
+                                        </Link>
+                                    </TableCell>
+                                    <TableCell>
+                                        <Link
+                                            onClick={(event) => {
+                                                event.preventDefault()
+                                                router.push('/alumnos/alumno?matricula=' + row.matricula)
+                                            }}
+                                            href="#"
+                                        >
+                                            {row.nombre + ' ' + row.apellido_paterno + ' ' + row.apellido_materno}
+                                        </Link>
+                                    </TableCell>
+                                </TableRow>
+                            ))}
+                            </TableBody>
+                        </Table>
+                        </TableContainer>
+                    </>
+                )
+            }
         </ThemeProvider>
     )
 }
