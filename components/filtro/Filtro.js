@@ -36,8 +36,7 @@ export default function Filtro() {
     const [turno, setTurno] = React.useState(false)
     const [matutino, setMatutino] = React.useState(false)
     const [grupo, setGrupo] = React.useState(false)
-
-    const [grupoInfo, setGrupoInfo] = React.useState('')
+    
     const [requestAlumnos, setRequestAlumnos] = React.useState([])
 
     const [requestAlumnosGrado, setRequestAlumnosGrado] = React.useState([])
@@ -65,6 +64,7 @@ export default function Filtro() {
         }
         setTurno(true)
         setMatutino(true)
+        setGrupo(false)
     }
 
     async function getAlumnosTurno(turno) {
